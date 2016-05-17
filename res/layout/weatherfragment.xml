@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <Spinner
+            android:id="@+id/province"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/spinner"
+            />
+        <LinearLayout
+            android:id="@+id/cities"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        <TextView  
+            android:id="@+id/weatherinfo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/weatherinfo"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
+            <Button
+                android:id="@+id/sendweather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" 
+                android:text="@string/sendweather"
+                android:background="@drawable/btn"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

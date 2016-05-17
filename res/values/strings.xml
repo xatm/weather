@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">weather</string>
+    <string name="weather">weather</string>
+    <string name="buscard">buscard</string>
+    <string name="fund">fund</string>
+    <string name="traceloc">traceloc</string>
+    <string name="weatherinfo">getting weather info, please wait</string>
+    <string name="buscardinfo">getting buscard info, please wait</string>
+    <string name="fundinfo">getting fund info, please wait</string>
+    <string name="sendweather">sendweather</string>
+    <string name="buscardnumber">input a buscard number to be queried(8 digit)</string>
+    <string name="buscardnumberadd">add</string>
+    <string name="buscardnumberdel">del</string>
+    <string name="querybuscard">querybuscard</string>
+    <string-array name="provinces">
+        <item>sichuan</item>
+        <item>chongqing</item>
+        <item>guizhou</item>
+        <item>yunnan</item>
+        <item>xizang</item>
+        <item>xinjiang</item>
+        <item>neimenggu</item>
+        <item>heilongjiang</item>
+        <item>jilin</item>
+        <item>liaoning</item>
+        <item>hebei</item>
+        <item>henan</item>
+        <item>qinghai</item>
+        <item>ningxia</item>
+        <item>gansu</item>
+        <item>sanxi</item>
+        <item>shanxi</item>
+        <item>shandong</item>
+        <item>hubei</item>
+        <item>hunan</item>
+        <item>guangxi</item>
+        <item>guangdong</item>
+        <item>fujian</item>
+        <item>jiangxi</item>
+        <item>zhejiang</item>
+        <item>jiangsu</item>
+        <item>anhui</item>
+        <item>beijing</item>
+        <item>tianjin</item>
+        <item>shanghai</item>
+        <item>hainan</item>
+        <item>xianggang</item>
+        <item>aomen</item>
+        <item>taiwan</item>
+    </string-array>
+</resources>

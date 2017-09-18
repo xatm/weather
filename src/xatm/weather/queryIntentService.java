@@ -213,7 +213,7 @@ public class queryIntentService extends IntentService
         }
 
         // get data
-        Matcher mdata = Pattern.compile("<td\\salign=\"center\">\\s*([\\u4E00-\\u9FA50-9A-Z/\\.]*\\s*?[0-9:]*)\\s*?</td>").matcher(buscardcontent);
+        Matcher mdata = Pattern.compile("<td\\salign=\"center\">\\s*([\\u4E00-\\u9FA50-9A-Z/\\-\\.]*\\s*?[0-9:]*)\\s*?</td>").matcher(buscardcontent);
         int datacount = 0;
         int columncount = columnnames.size();
         try {

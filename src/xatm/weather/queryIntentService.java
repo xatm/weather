@@ -28,7 +28,6 @@ import android.util.Xml;
 public class queryIntentService extends IntentService
 {
     private String weatherinfo;
-    private String buscardinfo;
     private String fundinfo;
     private ExecutorService pool;  
 
@@ -66,7 +65,6 @@ public class queryIntentService extends IntentService
 
         final ArrayList<String> buscardnumbers = it.getStringArrayListExtra("buscardnumbers");
         if(buscardnumbers != null) {
-            buscardinfo = "";
             for(int i = 0; i < buscardnumbers.size(); i++) {
                 final JSONObject buscardsjson = new JSONObject();
                 final String buscardnumber = buscardnumbers.get(i);
@@ -81,8 +79,15 @@ public class queryIntentService extends IntentService
 
                 new Thread(new Runnable() {
                     public void run() {
-                        String buscardcontent = queryHTTP(buscardurl, "UTF-8");
-                        buscardinfo += parsebuscard(buscardsjson, buscardcontent);
+                        String buscardcontent = queryHTTP("http://cross-jeffw.c9.io/buscard/"+buscardnumber, "UTF-8");
+                        if(buscardcontent.matches("\\[.+\\]$")) { 
+                            parsecachebuscard(buscardsjson, buscardcontent);
+                        }
+                        else {
+                            buscardcontent = queryHTTP(buscardurl, "UTF-8");
+                            parsebuscard(buscardsjson, buscardcontent);
+                        }
+                        //Log.e("weather", buscardsjson.toString());
 
                         Intent buscardinfointent = new Intent();
                         buscardinfointent.putExtra("buscardinfo", buscardsjson.toString());
@@ -199,8 +204,33 @@ public class queryIntentService extends IntentService
         return parseresult;
     }
 
-    public String parsebuscard(JSONObject buscardsjson, String buscardcontent) {
-        String buscardinfo = "";
+    public void parsecachebuscard(JSONObject buscardsjson, String buscardcontent) {
+        try {
+            JSONArray cachejsonarray = new JSONArray(buscardcontent);
+            JSONArray buscardjsonarray = new JSONArray();
+            JSONObject cachejson,buscardjson;
+            for(int i = 0; i < cachejsonarray.length(); i++) {
+                cachejson = new JSONObject();
+                cachejson = cachejsonarray.getJSONObject(i);
+
+                buscardjson = new JSONObject();
+                buscardjson.put("线路", cachejson.getString("线路"));
+                buscardjson.put("车号", cachejson.getString("车号"));
+                buscardjson.put("消费时间", cachejson.getString("消费时间").replaceAll("(.+)T(.+)\\.[0-9]+Z$", "$1 $2"));
+                buscardjson.put("消费次数", cachejson.getString("消费次数"));
+                buscardjson.put("剩余次数", cachejson.getString("剩余次数"));
+                buscardjson.put("电子钱包", cachejson.getString("电子钱包"));
+
+                buscardjsonarray.put(buscardjson);
+            }
+            buscardsjson.put("buscard", buscardjsonarray);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parsebuscard(JSONObject buscardsjson, String buscardcontent) {
         JSONArray buscardjsonarray = new JSONArray();
        
         // get every column of buscard related info
@@ -237,11 +267,7 @@ public class queryIntentService extends IntentService
             buscardsjson.put("buscard", buscardjsonarray);
         }
         catch(Exception e) {
-            buscardinfo += "信息暂不能查询";
         }
-        buscardinfo += "\n";
-
-        return buscardinfo;
     }
 
     public String parsefund(String fundcontent) {

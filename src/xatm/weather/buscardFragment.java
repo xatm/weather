@@ -45,9 +45,9 @@ public class buscardFragment extends Fragment implements OnClickListener
     private Button buscardnumberaddbutton;
     private Button buscardnumberdelbutton;
     private Button querybuscardbutton;
-    private TableLayout buscardnumberlayout;
+    private LinearLayout buscardnumberlayout;
     private ArrayList<String> buscardnumbers;
-    private CheckBox numbercb;
+    private CheckBox numbercheckbox;
     private SQLiteHelper sqlitehelper;
 
     private LinearLayout buscardinfolayout;
@@ -70,7 +70,7 @@ public class buscardFragment extends Fragment implements OnClickListener
         buscardnumberaddbutton = (Button)view.findViewById(R.id.buscardnumberadd);
         buscardnumberdelbutton = (Button)view.findViewById(R.id.buscardnumberdel);
         querybuscardbutton = (Button)view.findViewById(R.id.querybuscard);
-        buscardnumberlayout = (TableLayout)view.findViewById(R.id.buscards);
+        buscardnumberlayout = (LinearLayout)view.findViewById(R.id.buscards);
         buscardinfolayout = (LinearLayout)view.findViewById(R.id.buscardinfo);
 
         waitview = new buscardtextview(getActivity(), getString(R.string.buscardinfo));
@@ -78,7 +78,7 @@ public class buscardFragment extends Fragment implements OnClickListener
         sqlitehelper = SQLiteHelper.getInstance(getActivity());
         buscardnumbers = sqlitehelper.readbuscardtable();//= new ArrayList<String>();//Arrays.asList("", ""));
 
-        createbuscardnumbercb(buscardnumbers);
+        createbuscardnumbercheckbox(buscardnumbers);
         buscardnumberaddbutton.setOnClickListener(this);
         buscardnumberdelbutton.setOnClickListener(this);
         querybuscardbutton.setOnClickListener(this);
@@ -202,31 +202,37 @@ public class buscardFragment extends Fragment implements OnClickListener
         }
     }
 
-    public void createbuscardnumbercb(ArrayList<String> buscardnumbers) {
+    public void createbuscardnumbercheckbox(ArrayList<String> buscardnumbers) {
         buscardnumberlayout.removeAllViews();
-        TableRow tablerow = new TableRow(getActivity());
-        int col = 0;
+        LinearLayout numberrow = new LinearLayout(getActivity());
+        numberrow.setOrientation(LinearLayout.HORIZONTAL);
+        int columnwidth = 0;
 
         for(int i = 0; i < buscardnumbers.size(); i++) {
             final String number = buscardnumbers.get(i);
-            numbercb = new CheckBox(getActivity());
-            numbercb.setId(Integer.parseInt(number));
-            numbercb.setText(number);
-            numbercb.setTextColor(android.graphics.Color.BLUE);
+            numbercheckbox = new CheckBox(getActivity());
+            numbercheckbox.setId(Integer.parseInt(number));
+            numbercheckbox.setText(number);
+            numbercheckbox.setTextColor(android.graphics.Color.BLUE);
 
-            numbercb.performClick();
+            numbercheckbox.performClick();
 
-            tablerow.addView(numbercb);
-            col++;
-            col %= 3;
-            if(col == 0) {
-                buscardnumberlayout.addView(tablerow);
-                tablerow = new TableRow(getActivity());
+            // measure in order to get the width of each buscardnumber checkbox
+            numbercheckbox.measure(View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED),
+                              View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED));
+
+            // check if new buscardnumber checkbox exceeds the width of one row
+            if(columnwidth + numbercheckbox.getMeasuredWidth() > buscardnumberlayout.getWidth()) {
+                buscardnumberlayout.addView(numberrow);
+                numberrow = new LinearLayout(getActivity());
+                columnwidth = 0;
             }
+            numberrow.addView(numbercheckbox);
+            columnwidth += numbercheckbox.getMeasuredWidth();
         }
 
-        if(col != 0) {
-            buscardnumberlayout.addView(tablerow);
+        if(columnwidth != 0) {
+            buscardnumberlayout.addView(numberrow);
         }
     }
     
@@ -238,7 +244,7 @@ public class buscardFragment extends Fragment implements OnClickListener
                 try {
                     sqlitehelper.appendbuscardtable(bnstring);
                     buscardnumbers.add(bnstring);
-                    createbuscardnumbercb(buscardnumbers);
+                    createbuscardnumbercheckbox(buscardnumbers);
                     Toast.makeText(getActivity(), bnstring+" add", Toast.LENGTH_LONG).show();
                 }
                 catch (Exception e) {
@@ -248,10 +254,10 @@ public class buscardFragment extends Fragment implements OnClickListener
             case R.id.buscardnumberdel:
                 sqlitehelper.deletebuscardtable(bnstring);
                 buscardnumbers.remove(bnstring);
-                createbuscardnumbercb(buscardnumbers);
+                createbuscardnumbercheckbox(buscardnumbers);
                 Toast.makeText(getActivity(), bnstring+" del", Toast.LENGTH_LONG).show();
-                CheckBox numbercb = (CheckBox)getView().findViewById(Integer.parseInt(bnstring));
-                buscardnumberlayout.removeView(numbercb);
+                CheckBox numbercheckbox = (CheckBox)getView().findViewById(Integer.parseInt(bnstring));
+                buscardnumberlayout.removeView(numbercheckbox);
                 break;
             case R.id.querybuscard:
                 // find all checked buscardnumber
